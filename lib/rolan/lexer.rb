@@ -67,8 +67,15 @@ module Rolan
     end
 
     ESC = {
-      'n' => "\n",
       't' => "\t",
+      'v' => "\v",
+      'n' => "\n",
+      'r' => "\r",
+      'f' => "\f",
+      'b' => "\b",
+      'a' => "\a",
+      'e' => "\e",
+      's' => "\s",
     }
 
     def lex_string(s, line)
@@ -81,10 +88,10 @@ module Rolan
         return :lex_default
       when '\\'
         case
-        when s.scan(/x([\da-fA-F]{4})/), s.scan(/X([\da-fA-F]{8})/)
-          @string.value << Kernel.Integer(s[1], 16).chr
+        when s.scan(/u([\da-fA-F]{4})/), s.scan(/U([\da-fA-F]{8})/)
+          @string.value << Kernel.Integer(s[1], 16).chr(Encoding::UTF_8)
         when s.scan(/./)
-          @string.value << (ESC[c] || c)
+          @string.value << (ESC[s.matched] || s.matched)
         end
       else
         @string.value << s.rest
@@ -94,4 +101,6 @@ module Rolan
     end
   end
 end
+
+
 

@@ -11,7 +11,7 @@ class TestLexer < Test::Unit::TestCase
     'E-float (+)' => ['1.23e+1', :LIT_FLOAT, 12.3],
     'E-float (-)' => ['1.23e-1', :LIT_FLOAT, 0.123],
     'string literal' => ['"hoge"', :LIT_STRING, 'hoge'],
-    's-lit x-esc' => ['"\\x0041"', :LIT_STRING, 'A'],
+    's-lit u-esc' => ['"\\u0041"', :LIT_STRING, 'A'],
   )
   def test_lex_token(x)
     src, tag, val = x

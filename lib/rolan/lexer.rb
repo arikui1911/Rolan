@@ -46,12 +46,12 @@ module Rolan
       when s.scan(/\s+/), s.scan(/#.*/)
         ;
       when s.scan(/"/)
-        @string = Token.new(:LIT_STRING, String.new, line, col)
+        @string = Token.new(:STRING, String.new, line, col)
         return :lex_string
       when s.scan(/(0|[1-9]\d*)\.\d+([eE][+-]?\d+)?/)
-        e.(:LIT_FLOAT, Kernel.Float(s.matched))
+        e.(:FLOAT, Kernel.Float(s.matched))
       when s.scan(/(0|[1-9]\d*)/)
-        e.(:LIT_INT, Kernel.Integer(s.matched))
+        e.(:INT, Kernel.Integer(s.matched))
       when s.scan(/./)
         e.(s.matched, s.matched)
       else

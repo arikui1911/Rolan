@@ -38,13 +38,6 @@ module Rolan
         :FLOAT => ->(t){ AST::Float.new(t.line, t.column, t.value) },
         :STRING => ->(t){ AST::String.new(t.line, t.column, t.value) },
       )
-      #t = expect('(', :INT)
-      #case t.tag
-      #in '('
-      #  parse_lexp().tap{ expect ')' }
-      #in :INT
-      #  AST::Int.new(t.line, t.column, t.value)
-      #end
     end
 
     def next_token

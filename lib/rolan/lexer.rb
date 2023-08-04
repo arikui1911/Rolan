@@ -7,6 +7,7 @@ module Rolan
     def initialize(src)
       @src = src
       @fib = Fiber.new(&method(:lex))
+      @last = nil
     end
 
     def next_token
@@ -16,6 +17,7 @@ module Rolan
     private
 
     def emit_raw(token)
+      @last = token
       Fiber.yield token
     end
 
@@ -32,9 +34,23 @@ module Rolan
         until s.eos?
           m = send(m, s, lineno)
         end
+        on_eol(s, lineno)
         lineno += 1
       end
       emit :EOF, nil, lineno, 1
+    end
+
+    STMT_ENDS = [
+      ')',
+      :INT,
+      :FLOAT,
+      :STRING,
+      :IDENT,
+    ]
+
+    def on_eol(s, line)
+      return unless @last
+      emit(';', ';', line, s.pos + 1) if STMT_ENDS.include?(@last.tag)
     end
 
     def lex_default(s, line)
@@ -52,6 +68,8 @@ module Rolan
         e.(:FLOAT, Kernel.Float(s.matched))
       when s.scan(/(0|[1-9]\d*)/)
         e.(:INT, Kernel.Integer(s.matched))
+      when s.scan(/[_a-zA-Z]\w*/)
+        e.(:IDENT, s.matched.intern)
       when s.scan(/./)
         e.(s.matched, s.matched)
       else

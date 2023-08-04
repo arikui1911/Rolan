@@ -76,5 +76,16 @@ module Rolan
     end
 
     def self.string_value(v) = String.new(v)
+
+    class NativeFunction
+      def initialize(name, &body)
+        @name = name
+        @body = body
+      end
+
+      def call(args)
+        @body.call(args)
+      end
+    end
   end
 end
